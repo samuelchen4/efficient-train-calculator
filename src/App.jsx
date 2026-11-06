@@ -1,121 +1,55 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { useMemo, useState } from 'react'
+import Board from './components/Board'
+import StatsPanel from './components/StatsPanel'
+import PathModeToggle, { MANUAL } from './components/PathModeToggle'
+import { getActiveRouteIndices, ROUTE_GROUPS } from './data/routeGroups'
+import { findConnection, MAX_CARS } from './data/steiner'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [selectedCities, setSelectedCities] = useState([])
+  // pairKey -> chosen lane index for double routes.
+  const [laneChoice, setLaneChoice] = useState({})
+  // MANUAL: routes between selected cities. Otherwise: selected cities are
+  // destinations, connected by the best tree for that mode.
+  const [mode, setMode] = useState(MANUAL)
+
+  const connection = useMemo(
+    () => (mode === MANUAL ? null : findConnection(selectedCities, mode)),
+    [selectedCities, mode]
+  )
+
+  const activeRoutes = useMemo(() => {
+    if (mode === MANUAL) return getActiveRouteIndices(selectedCities, laneChoice)
+    return (connection ?? []).map((key) => ROUTE_GROUPS[key][laneChoice[key] ?? 0])
+  }, [mode, selectedCities, laneChoice, connection])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <main className="app">
+      <section className="app-section app-row">
+        <StatsPanel
+          activeRoutes={activeRoutes}
+          onReset={() => {
+            setSelectedCities([])
+            setLaneChoice({})
+          }}
         >
-          Count is {count}
-        </button>
+          <PathModeToggle mode={mode} onChange={setMode} />
+          {mode !== MANUAL && selectedCities.length < 2 && (
+            <p className="path-note">Select two or more destinations.</p>
+          )}
+          {mode !== MANUAL && selectedCities.length >= 2 && !connection && (
+            <p className="path-note">No connection within {MAX_CARS} cars.</p>
+          )}
+        </StatsPanel>
+        <Board
+          selectedCities={selectedCities}
+          setSelectedCities={setSelectedCities}
+          activeRoutes={activeRoutes}
+          setLaneChoice={setLaneChoice}
+        />
       </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
 }
 

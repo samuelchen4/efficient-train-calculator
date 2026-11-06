@@ -1,0 +1,67 @@
+.board-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 2000px;
+  margin: 0 auto;
+}
+
+.board-svg {
+  width: 100%;
+  height: auto;
+  background: #dceefb;
+  border-radius: 8px;
+}
+
+.route-chunk {
+  fill: #dceefb;
+  stroke-width: 2.5;
+}
+
+/* Selected routes sit on a continuous teal band (a hue none of the route
+   colours use, so every car colour stands out against it).
+   18px wide: clears the 12.5px cars by ~3px each side, and stays inside the
+   16px lane spacing so it doesn't touch a parallel route's cars. */
+.route-halo {
+  stroke: #00bfa5;
+  stroke-width: 18;
+  stroke-linecap: round;
+}
+
+.route.switchable {
+  cursor: pointer;
+}
+
+.route.switchable:hover .route-chunk {
+  stroke-width: 4;
+}
+
+.city {
+  cursor: pointer;
+}
+
+.city-dot {
+  fill: #dceefb;
+  stroke: #37474f;
+  stroke-width: 2;
+  transition: r 0.1s ease;
+}
+
+.city-dot.selected {
+  stroke: #d81b60;
+  stroke-width: 3;
+}
+
+.city-label {
+  font-size: 6px;
+  fill: #1a1a1a;
+  pointer-events: none;
+  user-select: none;
+}
+
+.selected-city {
+  font-size: 1rem;
+  font-weight: 500;
+}

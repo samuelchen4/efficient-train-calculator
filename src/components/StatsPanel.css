@@ -1,0 +1,82 @@
+.stats-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 200px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f7fbfe;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #546e7a;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-empty {
+  color: #90a4ae;
+}
+
+.color-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.color-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid #37474f;
+  flex-shrink: 0;
+}
+
+.color-name {
+  flex: 1;
+}
+
+.reset-button {
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: #37474f;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background: #263238;
+}
+
+.color-count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
